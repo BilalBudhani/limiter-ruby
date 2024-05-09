@@ -39,7 +39,7 @@ module Limiter
     end
 
     def request
-      @response = HTTP.get(url, params: { token: token})
+      HTTP.get(url, params: { token: token})
     end
   end
 end
