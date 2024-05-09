@@ -7,7 +7,7 @@ module Limiter
 
     attr_reader :namespace, :limit, :period, :identifier, :response, :token
 
-    def initialize(namespace:, limit:, period:, identifier: nil)
+    def initialize(namespace:, limit:, period:)
       @namespace = namespace
       @limit = limit
       @period = period.to_i
@@ -15,7 +15,7 @@ module Limiter
       @token = ENV["LIMITER_TOKEN"]
       @response = nil
 
-      raise Error, "LIMITER_TOKEN is not set" if @token.nil?
+      raise Error, "LIMITER_TOKEN environment variable is not set" if @token.nil?
     end
 
     def check(identifier)
