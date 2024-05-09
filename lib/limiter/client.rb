@@ -18,7 +18,7 @@ module Limiter
 
     def check(identifier)
       @identifier = identifier
-       RateLimitResponse.new(request)
+      RateLimitResponse.new(request)
     end
 
     def formatted_period
