@@ -5,14 +5,13 @@ module Limiter
 
     BASE_DOMAIN = "https://api.limiter.dev".freeze
 
-    attr_reader :namespace, :limit, :period, :identifier, :response, :token
+    attr_reader :namespace, :limit, :period, :identifier, :token
 
     def initialize(namespace:, limit:, period:)
       @namespace = namespace
       @limit = limit
       @period = period.to_i
       @token = ENV["LIMITER_TOKEN"]
-      @response = nil
 
       raise Error, "LIMITER_TOKEN environment variable is not set" if @token.nil?
     end
