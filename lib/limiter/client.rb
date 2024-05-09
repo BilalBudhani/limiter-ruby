@@ -11,7 +11,6 @@ module Limiter
       @namespace = namespace
       @limit = limit
       @period = period.to_i
-      @identifier = identifier
       @token = ENV["LIMITER_TOKEN"]
       @response = nil
 
