@@ -27,12 +27,11 @@ Assuming this is a Ruby on Rails app within ActiveJob
 ```ruby
 class ExpensiveJob < ApplicationJob
 
-
   def perform
     rate_limit = limiter.check(user.id) # A unique identifier
 
     if rate_limit.exhausted? # Rate limit got hit
-      self.class.set(wait: 1.minute).perform_later(..args)
+      self.class.set(wait: rate_limit.resets_in).perform_later(..args)
       return
     end
 
