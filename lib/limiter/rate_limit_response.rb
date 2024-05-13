@@ -10,11 +10,15 @@ module Limiter
     end
 
     def exhausted?
-      @response.status == 429
+      signed_request? && @response.status == 429
     end
 
     def allowed?
-      @response.status == 200
+      signed_request? && @response.status == 200
+    end
+
+    def signed_request?
+      @response.headers["X-Limiter-Signed"].to_s == "true"
     end
 
     private

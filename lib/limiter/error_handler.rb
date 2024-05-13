@@ -9,7 +9,6 @@ module Limiter
 
     def initialize(error)
       @error = error
-      @logger = Logger.new(STDOUT)
     end
 
     def handle_error
@@ -29,6 +28,7 @@ module Limiter
     end
 
     def log(error)
+      @logger ||= Logger.new(STDOUT)
       @logger.error(error)
     end
   end
