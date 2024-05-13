@@ -1,8 +1,10 @@
 # Limiter
 
-[Limiter.dev](https://limiter.dev) enables apps to play nice with third party API rate limits and stays within the defined boundaries with a simple mechanism.
+[Limiter.dev](https://limiter.dev) enables building rate limits for your application with ease. It provides a simple interface to define rate limits and track usage.
 
-## Generate API Token
+## Usage
+
+### Generate API Token
 
 Before using the gem you must register at <https://limiter.dev> and generate an token to interact with the api. Thereafter, add the token to app's environment variable
 
@@ -10,7 +12,7 @@ Before using the gem you must register at <https://limiter.dev> and generate an 
 LIMITER_TOKEN: [GENERATED TOKEN]
 ```
 
-## Install the gem
+### Install the gem
 
 In the `Gemfile` add the following
 
@@ -18,7 +20,7 @@ In the `Gemfile` add the following
 gem "limiter"
 ```
 
-## Usage
+## Integrate
 
 Assuming this is a Ruby on Rails app within ActiveJob
 

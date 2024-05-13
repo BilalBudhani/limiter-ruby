@@ -8,13 +8,11 @@ Gem::Specification.new do |spec|
   spec.authors = ["Bilal Budhani"]
   spec.email = ["bilal@bilalbudhani.com"]
 
-  spec.summary = "Play nice with third party API rate limits"
-  spec.description = "Limiter allows you to stay within the defined rate limits of third party APIs by providing a simple interface to manage rate limits."
+  spec.summary = "Easily Build & Track Rate Limits"
+  spec.description = "Limiter enables building rate limits for your application with ease. It provides a simple interface to define rate limits and track usage."
   spec.homepage = "https://limiter.dev"
   spec.license = "MIT"
   spec.required_ruby_version = ">= 2.6.0"
-
-  spec.metadata["allowed_push_host"] = "TODO: Set to your gem server 'https://example.com'"
 
   spec.metadata["homepage_uri"] = spec.homepage
   spec.metadata["source_code_uri"] = "https://github.com/bilalbudhani/limiter-ruby"
