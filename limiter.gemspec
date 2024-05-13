@@ -3,7 +3,7 @@
 require_relative "lib/limiter/version"
 
 Gem::Specification.new do |spec|
-  spec.name = "limiter"
+  spec.name = "limiter-ruby"
   spec.version = Limiter::VERSION
   spec.authors = ["Bilal Budhani"]
   spec.email = ["bilal@bilalbudhani.com"]

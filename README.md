@@ -17,7 +17,7 @@ LIMITER_TOKEN: [GENERATED TOKEN]
 In the `Gemfile` add the following
 
 ```ruby
-gem "limiter"
+gem "limiter-ruby"
 ```
 
 ## Integrate
