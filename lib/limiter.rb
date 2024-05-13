@@ -3,6 +3,7 @@
 require "http"
 require_relative "limiter/client"
 require_relative "limiter/rate_limit_response"
+require_relative "limiter/error_handler"
 require_relative "limiter/version"
 
 module Limiter

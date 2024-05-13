@@ -13,7 +13,7 @@ module Limiter
       @period = period.to_i
       @token = ENV["LIMITER_TOKEN"]
 
-      raise Error, "LIMITER_TOKEN environment variable is not set" if @token.nil?
+      ErrorHandler.error("LIMITER_TOKEN environment variable is not set") if @token.nil?
     end
 
     def check(identifier)
@@ -30,7 +30,7 @@ module Limiter
       when 86_400..1_209_599
         (@period / 86_400).to_s + "d"
       else
-        raise Error, "Invalid period"
+        ErrorHandler.error("Invalid period")
       end
     end
 
