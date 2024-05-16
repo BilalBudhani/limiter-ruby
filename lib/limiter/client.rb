@@ -35,11 +35,11 @@ module Limiter
     end
 
     def url
-      "#{BASE_DOMAIN}/#{namespace}/#{limit}/#{formatted_period}/#{identifier}"
+      "#{BASE_DOMAIN}/ns/#{namespace}/#{limit}/#{formatted_period}/#{identifier}"
     end
 
-    def request
-      HTTP.get(url, params: { token: token})
+    def request(params = {})
+      HTTP.get(url, params: { token: token}.merge(params))
     end
   end
 end

@@ -20,7 +20,7 @@ In the `Gemfile` add the following
 gem "limiter-ruby"
 ```
 
-## Integrate
+## Simple Rate Limit Example
 
 Assuming this is a Ruby on Rails app within ActiveJob
 
@@ -42,6 +42,32 @@ class ExpensiveJob < ApplicationJob
   private
   def limiter
     Limiter::Client.new(namespace: "openai", limit: 60, period: 1.minute)
+  end
+end
+```
+
+## Point Based Rate Limit Example
+
+```ruby
+class ExpensiveJob < ApplicationJob
+
+  def perform
+    rate_limit = limiter.check(shop.id) # A unique identifier
+
+    if rate_limit.exhausted? # Rate limit got hit
+      self.class.set(wait: rate_limit.resets_in).perform_later(..args)
+      return
+    else
+      # Good to continue expensive operation
+      # ...
+      # Perform query
+      limiter.used(250) # Points deducted for last query
+    end
+  end
+
+  private
+  def limiter
+    Limiter::Client.new("shopify", 1000, 1.minute)
   end
 end
 ```
