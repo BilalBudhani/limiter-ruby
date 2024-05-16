@@ -67,7 +67,7 @@ class ExpensiveJob < ApplicationJob
 
   private
   def limiter
-    Limiter::Points.new("shopify", 1000, 1.minute)
+    Limiter::Points.new(namespace: "shopify", limit: 1000, period: 1.minute)
   end
 end
 ```

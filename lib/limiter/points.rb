@@ -2,9 +2,6 @@
 
 module Limiter
   class Points < Client
-    def initialize(namespace, points, period)
-      super(namespace: namespace, limit: points, period: period)
-    end
 
     def url
       "#{BASE_DOMAIN}/points/#{namespace}/#{limit}/#{formatted_period}/#{identifier}"
