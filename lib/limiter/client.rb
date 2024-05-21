@@ -23,6 +23,8 @@ module Limiter
 
     def formatted_period
       case @period
+      when 1..59
+        (@period).to_s + "s"
       when 60..3599
         (@period / 60).to_s + "m"
       when 3600..86_399
