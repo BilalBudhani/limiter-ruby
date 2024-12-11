@@ -1,12 +1,19 @@
 # frozen_string_literal: true
 
-require "http"
-require "limiter/client"
-require "limiter/points"
-require "limiter/rate_limit_response"
-require "limiter/error_handler"
-require "limiter/version"
+require_relative "limiter/client"
+require_relative "limiter/points"
+require_relative "limiter/rate_limit_response"
+require_relative "limiter/error_handler"
+require_relative "limiter/version"
 
 module Limiter
   class Error < StandardError; end
+
+  class << self
+    attr_writer :logger
+  end
+
+  def self.logger
+    @logger ||= Logger.new(STDOUT)
+  end
 end

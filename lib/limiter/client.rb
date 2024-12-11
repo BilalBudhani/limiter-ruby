@@ -5,43 +5,52 @@ module Limiter
 
     BASE_DOMAIN = "https://api.limiter.dev".freeze
 
-    attr_reader :namespace, :limit, :period, :identifier, :token
+    attr_reader :namespace, :limit, :interval, :identifier, :token
 
-    def initialize(namespace:, limit:, period:)
+    def initialize(namespace:, limit:, interval:, token: ENV["LIMITER_TOKEN"])
       @namespace = namespace
       @limit = limit
-      @period = period.to_i
-      @token = ENV["LIMITER_TOKEN"]
+      @interval = interval.to_i
+      @token = token || ENV["LIMITER_TOKEN"]
+      @logger = Limiter.logger
 
-      ErrorHandler.error("LIMITER_TOKEN environment variable is not set") if @token.nil?
+      ErrorHandler.error("token is not set") if @token.nil?
     end
 
     def check(identifier)
       @identifier = identifier
+      @logger.info("Limiter performing request: #{namespace}/#{limit}/#{interval}/#{identifier}")
       RateLimitResponse.new(request)
     end
 
-    def formatted_period
-      case @period
+    def formatted_interval
+      case @interval
       when 1..59
-        (@period).to_s + "s"
+        (@interval).to_s + "s"
       when 60..3599
-        (@period / 60).to_s + "m"
+        (@interval / 60).to_s + "m"
       when 3600..86_399
-        (@period / 3600).to_s + "h"
+        (@interval / 3600).to_s + "h"
       when 86_400..1_209_599
-        (@period / 86_400).to_s + "d"
+        (@interval / 86_400).to_s + "d"
       else
-        ErrorHandler.error("Invalid period")
+        ErrorHandler.error("Invalid interval")
       end
     end
 
-    def url
-      "#{BASE_DOMAIN}/ns/#{namespace}/#{limit}/#{formatted_period}/#{identifier}"
+    def limiter_path
+      "/rl/#{namespace}/#{limit}/#{formatted_interval}/#{identifier}"
     end
 
     def request(params = {})
-      HTTP.get(url, params: { token: token}.merge(params))
+      @_conn ||= Faraday.new(url: BASE_DOMAIN) do |conn|
+        conn.request :authorization, :Bearer, token
+        conn.response :json
+        conn.adapter Faraday.default_adapter
+        conn.headers["User-Agent"] = "Limiter-Ruby/#{Limiter::VERSION}"
+      end
+
+      @_conn.get(limiter_path, params)
     end
   end
 end

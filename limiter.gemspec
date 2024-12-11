@@ -8,8 +8,8 @@ Gem::Specification.new do |spec|
   spec.authors = ["Bilal Budhani"]
   spec.email = ["bilal@bilalbudhani.com"]
 
-  spec.summary = "Easily Build & Track Rate Limits"
-  spec.description = "Limiter enables building rate limits for your application with ease. It provides a simple interface to define rate limits and track usage."
+  spec.summary = "Toolkit for building rate limits for your application"
+  spec.description = "Limiter is a toolkit for building rate limits for your application. It provides a simple interface to define rate limits and track usage."
   spec.homepage = "https://limiter.dev"
   spec.license = "MIT"
   spec.required_ruby_version = ">= 2.6.0"
@@ -31,7 +31,7 @@ Gem::Specification.new do |spec|
   spec.require_paths = ["lib"]
 
   # Uncomment to register a new dependency of your gem
-  spec.add_dependency "http", "~> 5.0"
+  spec.add_dependency "faraday"
 
   # For more information and examples about making a new gem, check out our
   # guide at: https://bundler.io/guides/creating_gem.html

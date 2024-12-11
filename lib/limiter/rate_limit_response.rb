@@ -7,13 +7,17 @@ module Limiter
 
     def initialize(response)
       @response = response
+      @logger = Limiter.logger
     end
 
     def exhausted?
+      @logger.info("Limiter response: #{@response.status}")
       signed_request? && @response.status == 429
     end
+    alias_method :exceeded?, :exhausted?
 
     def allowed?
+      @logger.info("Limiter response: #{@response.status}")
       signed_request? && @response.status == 200
     end
 

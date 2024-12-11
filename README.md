@@ -25,49 +25,24 @@ gem "limiter-ruby"
 Assuming this is a Ruby on Rails app within ActiveJob
 
 ```ruby
-class ExpensiveJob < ApplicationJob
+class ApiController < ApplicationController
+  before_action :rate_limit
 
-  def perform
-    rate_limit = limiter.check(user.id) # A unique identifier
-
-    if rate_limit.exhausted? # Rate limit got hit
-      self.class.set(wait: rate_limit.resets_in).perform_later(..args)
-      return
-    end
-
-    # Good to continue expensive operation
-    # ...
+  def index
+    # Good to continue
   end
 
   private
-  def limiter
-    Limiter::Client.new(namespace: "openai", limit: 60, period: 1.minute)
-  end
-end
-```
+  def rate_limit
+    rate_limit = limiter.check(user.id)
 
-## Point Based Rate Limit Example
-
-```ruby
-class ExpensiveJob < ApplicationJob
-
-  def perform
-    rate_limit = limiter.check(shop.id) # A unique identifier
-
-    if rate_limit.exhausted? # Rate limit got hit
-      self.class.set(wait: rate_limit.resets_in).perform_later(..args)
-      return
-    else
-      # Good to continue expensive operation
-      # ...
-      # Perform query
-      limiter.used(250) # Points deducted for last query
+    if rate_limit.exhausted?
+      render json: { error: "Rate limit exceeded" }, status: :too_many_requests
     end
   end
 
-  private
   def limiter
-    Limiter::Points.new(namespace: "shopify", limit: 1000, period: 1.minute)
+    Limiter::Client.new(token: ENV["LIMITER_TOKEN"], namespace: "openai", limit: 60, interval: 1.minute)
   end
 end
 ```

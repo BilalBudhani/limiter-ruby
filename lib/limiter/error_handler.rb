@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 require "logger"
 
 module Limiter
@@ -28,7 +29,7 @@ module Limiter
     end
 
     def log(error)
-      @logger ||= Logger.new(STDOUT)
+      @logger ||= Limiter.logger
       @logger.error(error)
     end
   end
