@@ -33,7 +33,7 @@ end
 
 ## Simple Rate Limit Example
 
-Assuming this is a Ruby on Rails app within ActiveJob
+Sample API controller that checks the rate limit for the current user and increments the request count
 
 ```ruby
 class ApiController < ApplicationController
@@ -62,12 +62,14 @@ end
 
 ## Points Rate Limit Example
 
+Sample ActiveJob that checks the rate limit for the shop and updates the request count
+
 ```ruby
 class DataSyncJob < ApplicationJob
   queue_as :default
 
   def perform
-    rate_limit = limiter.check(current_user.id)
+    rate_limit = limiter.check(shop.id)
     if rate_limit.exhausted?
       self.class.set(wait: rate_limit.resets_in).perform_later
       return
