@@ -63,27 +63,25 @@ end
 ## Points Rate Limit Example
 
 ```ruby
-class ApiController < ApplicationController
-  before_action :rate_limit
+class DataSyncJob < ApplicationJob
+  queue_as :default
 
-  def index
-    # continue the action
-
-    limiter.used(100) # mark 100 points used
-  end
-
-  private
-  def rate_limit
+  def perform
     rate_limit = limiter.check(current_user.id)
-
     if rate_limit.exhausted?
-      render json: { error: "Rate limit exceeded" }, status: :too_many_requests
+      self.class.set(wait: rate_limit.resets_in).perform_later
+      return
     end
+
+    # continue the action
+    response = ... # query_cost = 100
+
+    limiter.used(response.query_cost) # mark 100 points used
   end
 
  # Allow 1000 points per minute
   def limiter
-    Limiter::Points.new(namespace: "shopify", limit: 1000, interval: 1.minute)
+    Limiter::Points.new(namespace: "shopify", limit: 1000, interval: 20.seconds)
   end
 end
 ```
