@@ -1,32 +1,41 @@
 # frozen_string_literal: true
 
 module Limiter
-  class RateLimitResponse
+  class ResponseHandler
 
     attr_reader :response
 
     def initialize(response)
       @response = response
-      @logger = Limiter.logger
     end
 
     def exhausted?
-      @logger.info("Limiter response: #{@response.status}")
       signed_request? && @response.status == 429
     end
     alias_method :exceeded?, :exhausted?
 
     def allowed?
-      @logger.info("Limiter response: #{@response.status}")
       signed_request? && @response.status == 200
     end
 
     def resets_in
       if signed_request? && !resets_at.nil?
-        (Time.parse(resets_at) - Time.now).to_i
+        (Time.parse(resets_at) - Time.now)
       else
         0
       end
+    end
+
+    def resets_at
+      response_data["resetsAt"]
+    end
+
+    def remaining
+      response_data["remaining"]
+    end
+
+    def points
+      response_data["points"]
     end
 
     def signed_request?
@@ -34,12 +43,8 @@ module Limiter
     end
 
     private
-    def rate_limit_data
+    def response_data
       @_body ||= @response.parse
-    end
-
-    def resets_at
-      rate_limit_data["resetsAt"]
     end
   end
 end

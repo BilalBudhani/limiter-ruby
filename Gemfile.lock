@@ -1,8 +1,8 @@
 PATH
   remote: .
   specs:
-    limiter-ruby (0.1.6)
-      http (~> 5.0)
+    limiter-ruby (0.2.4)
+      http
 
 GEM
   remote: https://rubygems.org/

@@ -3,24 +3,28 @@
 module Limiter
   class Client
 
-    BASE_DOMAIN = "https://api.limiter.dev".freeze
+    BASE_URL = "https://api.limiter.dev"
 
-    attr_reader :namespace, :limit, :interval, :identifier, :token
+    attr_reader :namespace, :limit, :interval, :identifier, :token, :response
+    delegate :exhausted?, :allowed?, :exceeded?, :resets_in, :to => :response
 
-    def initialize(namespace:, limit:, interval:, token: ENV["LIMITER_TOKEN"])
+    def initialize(namespace:, limit:, interval:)
       @namespace = namespace
       @limit = limit
       @interval = interval.to_i
-      @token = token || ENV["LIMITER_TOKEN"]
       @logger = Limiter.logger
 
-      ErrorHandler.error("token is not set") if @token.nil?
+      ErrorHandler.error("API Token is not set") if Limiter.configuration.api_token.nil?
     end
 
     def check(identifier)
       @identifier = identifier
-      @logger.info("Limiter performing request: #{namespace}/#{limit}/#{interval}/#{identifier}")
-      RateLimitResponse.new(request)
+      @logger.info("check: #{namespace}/#{limit}/#{interval}/#{identifier}")
+      @response = ResponseHandler.new(request)
+      self
+    rescue => e
+      ErrorHandler.error("check failed: #{e.message}")
+      self
     end
 
     def formatted_interval
@@ -39,18 +43,14 @@ module Limiter
     end
 
     def limiter_path
-      "/rl/#{namespace}/#{limit}/#{formatted_interval}/#{identifier}"
+      "/ctr/#{namespace}/#{limit}/#{formatted_interval}/#{identifier}"
     end
 
     def request(params = {})
-      @_conn ||= Faraday.new(url: BASE_DOMAIN) do |conn|
-        conn.request :authorization, :Bearer, token
-        conn.response :json
-        conn.adapter Faraday.default_adapter
-        conn.headers["User-Agent"] = "Limiter-Ruby/#{Limiter::VERSION}"
-      end
-
-      @_conn.get(limiter_path, params)
+      HTTP
+        .auth("Bearer #{Limiter.configuration.api_token}")
+        .headers("User-Agent" => "Limiter-Ruby/#{Limiter::VERSION}")
+        .get(BASE_URL + limiter_path, params: params)
     end
   end
 end

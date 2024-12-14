@@ -13,24 +13,11 @@ module Limiter
     end
 
     def handle_error
-      if !production?
+      if Limiter.configuration.raise_errors?
         raise Error, @error
       else
-        log @error
+        Limiter.logger.error(@error)
       end
-    end
-
-    def production?
-      if defined?(Rails)
-        Rails.env.production?
-      else
-        (ENV["RACK_ENV"] || ENV["RAILS_ENV"] ) == "production"
-      end
-    end
-
-    def log(error)
-      @logger ||= Limiter.logger
-      @logger.error(error)
     end
   end
 end
