@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require "http"
+
 module Limiter
   class Client
 
@@ -47,7 +49,7 @@ module Limiter
     end
 
     def request(params = {})
-      HTTP
+      ::HTTP
         .auth("Bearer #{Limiter.configuration.api_token}")
         .headers("User-Agent" => "Limiter-Ruby/#{Limiter::VERSION}")
         .get(BASE_URL + limiter_path, params: params)
